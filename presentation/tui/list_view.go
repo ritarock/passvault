@@ -110,7 +110,7 @@ func (lv *ListView) renderTable() {
 	lv.table.SetCell(0, 2, tview.NewTableCell("Notes").
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
-	lv.table.SetCell(0, 3, tview.NewTableCell("Created At").
+	lv.table.SetCell(0, 3, tview.NewTableCell("CreatedAt").
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
 
