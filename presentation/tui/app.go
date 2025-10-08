@@ -3,6 +3,7 @@ package tui
 import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/ritarock/passvault/application/usecase"
+	"github.com/ritarock/passvault/domain/service"
 	"github.com/rivo/tview"
 )
 
@@ -17,6 +18,7 @@ type App struct {
 	createEntryUc *usecase.CreateEntryUsecase
 	updateEntryUc *usecase.UpdateEntryUsecase
 	deleteEntryUc *usecase.DeleteEntryUsecase
+	passwordGen   *service.PasswordGenerator
 }
 
 func NewApp(
@@ -34,6 +36,7 @@ func NewApp(
 		createEntryUc: createEntryUc,
 		updateEntryUc: updateEntryUc,
 		deleteEntryUc: deleteEntryUc,
+		passwordGen:   service.NewPasswordGenerator(),
 	}
 
 	app.listView = NewListView(app)

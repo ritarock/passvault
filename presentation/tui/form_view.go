@@ -30,7 +30,7 @@ func NewFormView(app *App) *FormView {
 }
 
 func (fv *FormView) setupHelp() {
-	fv.help.SetText("[Tab] Next Field  [Shift+Tab] Previous Field  [ESC] Cancel").
+	fv.help.SetText("[Tab] Next Field  [Shift+Tab] Previous Field  [Enter] Generate/Save  [ESC] Cancel").
 		SetTextAlign(tview.AlignCenter).
 		SetTextColor(ColorSecondary)
 }
@@ -82,6 +82,7 @@ func (fv *FormView) setupFormFields(name, password, url, notes string) {
 	fv.form.AddInputField("URL", url, 40, nil, nil)
 	fv.form.AddTextArea("Notes", notes, 40, 3, 0, nil)
 
+	fv.form.AddButton("Generate Password", fv.generatePassword)
 	fv.form.AddButton("Save", fv.save)
 	fv.form.AddButton("Cancel", func() {
 		fv.app.ShowList()
@@ -126,4 +127,15 @@ func (fv *FormView) save() {
 	}
 
 	fv.app.ShowList()
+}
+
+func (fv *FormView) generatePassword() {
+	password, err := fv.app.passwordGen.Generate(16)
+	if err != nil {
+		fv.app.ShowError(fmt.Sprintf("Failed to generate password: %v", err))
+		return
+	}
+
+	passwordField := fv.form.GetFormItemByLabel("Password").(*tview.InputField)
+	passwordField.SetText(password)
 }
