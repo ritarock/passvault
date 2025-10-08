@@ -28,5 +28,11 @@ func (uc *GetEntryUsecase) Execute(id string) (*entity.Entry, error) {
 		return nil, fmt.Errorf("failed to get entry: %w", err)
 	}
 
+	en.MarkAsViewed()
+
+	if err := uc.vaultRepo.Save(vault); err != nil {
+		return nil, fmt.Errorf("failed to save vault: %w", err)
+	}
+
 	return en, nil
 }

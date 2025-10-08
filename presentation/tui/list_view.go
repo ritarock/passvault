@@ -2,7 +2,6 @@ package tui
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/ritarock/passvault/domain/entity"
@@ -90,10 +89,6 @@ func (lv *ListView) Refresh() {
 	}
 
 	lv.entries = entries
-
-	sort.Slice(lv.entries, func(i, j int) bool {
-		return lv.entries[i].Name < lv.entries[j].Name
-	})
 
 	lv.renderTable()
 }
