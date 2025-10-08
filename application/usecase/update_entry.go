@@ -16,7 +16,7 @@ func NewUpdateEntryUsecase(vaultRepo repository.VaultRepository) *UpdateEntryUse
 	}
 }
 
-func (uc *UpdateEntryUsecase) Execute(id, name, password, url, notes string) error {
+func (uc *UpdateEntryUsecase) Execute(id, title, password, url, notes string) error {
 	vault, err := uc.vaultRepo.Load()
 	if err != nil {
 		return fmt.Errorf("failed to load vault: %w", err)
@@ -27,7 +27,7 @@ func (uc *UpdateEntryUsecase) Execute(id, name, password, url, notes string) err
 		return fmt.Errorf("failed to get entry: %w", err)
 	}
 
-	en.Update(name, password, url, notes)
+	en.Update(title, password, url, notes)
 
 	if err := vault.UpdateEntry(*en); err != nil {
 		return fmt.Errorf("failed to update entry: %w", err)

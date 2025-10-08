@@ -96,7 +96,7 @@ func (lv *ListView) Refresh() {
 func (lv *ListView) renderTable() {
 	lv.table.Clear()
 
-	lv.table.SetCell(0, 0, tview.NewTableCell("Name").
+	lv.table.SetCell(0, 0, tview.NewTableCell("Title").
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
 	lv.table.SetCell(0, 1, tview.NewTableCell("URL").
@@ -111,7 +111,7 @@ func (lv *ListView) renderTable() {
 
 	for i, entry := range lv.entries {
 		row := i + 1
-		lv.table.SetCell(row, 0, tview.NewTableCell(entry.Name).
+		lv.table.SetCell(row, 0, tview.NewTableCell(entry.Title).
 			SetTextColor(tcell.ColorWhite))
 		lv.table.SetCell(row, 1, tview.NewTableCell(entry.URL).
 			SetTextColor(ColorSecondary))
@@ -165,7 +165,7 @@ func (lv *ListView) deleteSelected() {
 
 	entry := lv.entries[index]
 	lv.app.ShowConfirm(
-		fmt.Sprintf("Delete '%s'?", entry.Name),
+		fmt.Sprintf("Delete '%s'?", entry.Title),
 		func() {
 			if err := lv.app.deleteEntryUc.Execute(entry.ID); err != nil {
 				lv.app.ShowError(fmt.Sprintf("Failed to delete entry: %v", err))

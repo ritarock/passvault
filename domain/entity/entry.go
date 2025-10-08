@@ -8,7 +8,7 @@ import (
 
 type Entry struct {
 	ID           string    `json:"id"`
-	Name         string    `json:"name"`
+	Title        string    `json:"title"`
 	Password     string    `json:"password"`
 	URL          string    `json:"url"`
 	Notes        string    `json:"notes"`
@@ -17,11 +17,11 @@ type Entry struct {
 	LastViewedAt time.Time `json:"last_viewed_at"`
 }
 
-func NewEntry(name, password, url, notes string) *Entry {
+func NewEntry(title, password, url, notes string) *Entry {
 	now := time.Now()
 	return &Entry{
 		ID:           uuid.New().String(),
-		Name:         name,
+		Title:        title,
 		Password:     password,
 		URL:          url,
 		Notes:        notes,
@@ -31,8 +31,8 @@ func NewEntry(name, password, url, notes string) *Entry {
 	}
 }
 
-func (e *Entry) Update(name, password, url, notes string) {
-	e.Name = name
+func (e *Entry) Update(title, password, url, notes string) {
+	e.Title = title
 	e.Password = password
 	e.URL = url
 	e.Notes = notes

@@ -69,15 +69,15 @@ func (fv *FormView) loadEntry() {
 		return
 	}
 
-	fv.setupFormFields(entry.Name, entry.Password, entry.URL, entry.Notes)
+	fv.setupFormFields(entry.Title, entry.Password, entry.URL, entry.Notes)
 }
 
 func (fv *FormView) setupNewForm() {
 	fv.setupFormFields("", "", "", "")
 }
 
-func (fv *FormView) setupFormFields(name, password, url, notes string) {
-	fv.form.AddInputField("Name", name, 40, nil, nil)
+func (fv *FormView) setupFormFields(title, password, url, notes string) {
+	fv.form.AddInputField("Title", title, 40, nil, nil)
 	fv.form.AddPasswordField("Password", password, 40, '*', nil)
 	fv.form.AddInputField("URL", url, 40, nil, nil)
 	fv.form.AddTextArea("Notes", notes, 40, 3, 0, nil)
@@ -99,14 +99,14 @@ func (fv *FormView) setupFormFields(name, password, url, notes string) {
 }
 
 func (fv *FormView) save() {
-	name := fv.form.GetFormItemByLabel("Name").(*tview.InputField).GetText()
+	title := fv.form.GetFormItemByLabel("Title").(*tview.InputField).GetText()
 	password := fv.form.GetFormItemByLabel("Password").(*tview.InputField).GetText()
 	url := fv.form.GetFormItemByLabel("URL").(*tview.InputField).GetText()
 	notes := fv.form.GetFormItemByLabel("Notes").(*tview.TextArea).GetText()
 
 	// バリデーション
-	if name == "" {
-		fv.app.ShowError("Name is required")
+	if title == "" {
+		fv.app.ShowError("Title is required")
 		return
 	}
 	if password == "" {
@@ -116,9 +116,9 @@ func (fv *FormView) save() {
 
 	var err error
 	if fv.isEdit {
-		err = fv.app.updateEntryUc.Execute(fv.entryID, name, password, url, notes)
+		err = fv.app.updateEntryUc.Execute(fv.entryID, title, password, url, notes)
 	} else {
-		err = fv.app.createEntryUc.Execute(name, password, url, notes)
+		err = fv.app.createEntryUc.Execute(title, password, url, notes)
 	}
 
 	if err != nil {
