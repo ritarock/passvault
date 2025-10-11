@@ -27,7 +27,7 @@ func NewEntry(title, password, url, notes string) *Entry {
 		Notes:        notes,
 		CreatedAt:    now,
 		UpdatedAt:    now,
-		LastViewedAt: time.Time{},
+		LastViewedAt: now,
 	}
 }
 
