@@ -6,11 +6,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ritarock/passvault/application/usecase"
-	"github.com/ritarock/passvault/domain/entity"
-	"github.com/ritarock/passvault/infra/crypto"
-	"github.com/ritarock/passvault/infra/persistence"
-	"github.com/ritarock/passvault/presentation/tui"
+	"github.com/ritarock/passvault/domain"
+	"github.com/ritarock/passvault/service"
+	"github.com/ritarock/passvault/storage"
+	"github.com/ritarock/passvault/tui"
 )
 
 const (
@@ -31,9 +30,9 @@ func run() error {
 
 	baseDir := filepath.Join(homeDir, AppDir)
 
-	keyManager := crypto.NewKeyManager(baseDir)
-	cryptoSvc := crypto.NewAESEncryptor(keyManager)
-	vaultRepo := persistence.NewFileVaultRepository(baseDir, cryptoSvc)
+	keyManager := storage.NewKeyManager(baseDir)
+	cryptoSvc := storage.NewAESEncryptor(keyManager)
+	vaultRepo := storage.NewFileVaultRepository(baseDir, cryptoSvc)
 
 	if !cryptoSvc.KeyExists() {
 		if err := initialize(cryptoSvc, vaultRepo); err != nil {
@@ -42,17 +41,17 @@ func run() error {
 	}
 
 	if !vaultRepo.Exists() {
-		vault := entity.NewVault()
+		vault := domain.NewVault()
 		if err := vaultRepo.Save(vault); err != nil {
 			return fmt.Errorf("failed to create vault: %w", err)
 		}
 	}
 
-	listEntriesUc := usecase.NewListEntriesUsecase(vaultRepo)
-	getEntryUc := usecase.NewGetEntryUsecase(vaultRepo)
-	createEntryUc := usecase.NewCreateEntryUsecase(vaultRepo)
-	updateEntryUc := usecase.NewUpdateEntryUsecase(vaultRepo)
-	deleteEntryUc := usecase.NewDeleteEntryUsecase(vaultRepo)
+	listEntriesUc := service.NewListEntriesUsecase(vaultRepo)
+	getEntryUc := service.NewGetEntryUsecase(vaultRepo)
+	createEntryUc := service.NewCreateEntryUsecase(vaultRepo)
+	updateEntryUc := service.NewUpdateEntryUsecase(vaultRepo)
+	deleteEntryUc := service.NewDeleteEntryUsecase(vaultRepo)
 
 	app := tui.NewApp(
 		listEntriesUc,
@@ -67,7 +66,7 @@ func run() error {
 	return app.Run()
 }
 
-func initialize(cryptoSvc *crypto.AESEncryptor, vaultRepo *persistence.FileVaultRepository) error {
+func initialize(cryptoSvc *storage.AESEncryptor, vaultRepo *storage.FileVaultRepository) error {
 	fmt.Println("First time setup...")
 	fmt.Println("Generating encryption key...")
 
@@ -76,7 +75,7 @@ func initialize(cryptoSvc *crypto.AESEncryptor, vaultRepo *persistence.FileVault
 	}
 
 	fmt.Println("Creating vault...")
-	vault := entity.NewVault()
+	vault := domain.NewVault()
 	if err := vaultRepo.Save(vault); err != nil {
 		return fmt.Errorf("failed to create vault: %w", err)
 	}

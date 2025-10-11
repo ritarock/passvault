@@ -1,23 +1,22 @@
-package usecase
+package service
 
 import (
 	"fmt"
 
-	"github.com/ritarock/passvault/domain/entity"
-	"github.com/ritarock/passvault/domain/repository"
+	"github.com/ritarock/passvault/domain"
 )
 
 type GetEntryUsecase struct {
-	vaultRepo repository.VaultRepository
+	vaultRepo domain.VaultRepository
 }
 
-func NewGetEntryUsecase(vaultRepo repository.VaultRepository) *GetEntryUsecase {
+func NewGetEntryUsecase(vaultRepo domain.VaultRepository) *GetEntryUsecase {
 	return &GetEntryUsecase{
 		vaultRepo: vaultRepo,
 	}
 }
 
-func (uc *GetEntryUsecase) Execute(id string) (*entity.Entry, error) {
+func (uc *GetEntryUsecase) Execute(id string) (*domain.Entry, error) {
 	vault, err := uc.vaultRepo.Load()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load vault: %w", err)

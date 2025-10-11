@@ -1,16 +1,16 @@
-package usecase
+package service
 
 import (
 	"fmt"
 
-	"github.com/ritarock/passvault/domain/repository"
+	"github.com/ritarock/passvault/domain"
 )
 
 type UpdateEntryUsecase struct {
-	vaultRepo repository.VaultRepository
+	vaultRepo domain.VaultRepository
 }
 
-func NewUpdateEntryUsecase(vaultRepo repository.VaultRepository) *UpdateEntryUsecase {
+func NewUpdateEntryUsecase(vaultRepo domain.VaultRepository) *UpdateEntryUsecase {
 	return &UpdateEntryUsecase{
 		vaultRepo: vaultRepo,
 	}

@@ -104,7 +104,6 @@ func (fv *FormView) save() {
 	url := fv.form.GetFormItemByLabel("URL").(*tview.InputField).GetText()
 	notes := fv.form.GetFormItemByLabel("Notes").(*tview.TextArea).GetText()
 
-	// バリデーション
 	if title == "" {
 		fv.app.ShowError("Title is required")
 		return

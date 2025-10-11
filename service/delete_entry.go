@@ -1,16 +1,16 @@
-package usecase
+package service
 
 import (
 	"fmt"
 
-	"github.com/ritarock/passvault/domain/repository"
+	"github.com/ritarock/passvault/domain"
 )
 
 type DeleteEntryUsecase struct {
-	vaultRepo repository.VaultRepository
+	vaultRepo domain.VaultRepository
 }
 
-func NewDeleteEntryUsecase(vaultRepo repository.VaultRepository) *DeleteEntryUsecase {
+func NewDeleteEntryUsecase(vaultRepo domain.VaultRepository) *DeleteEntryUsecase {
 	return &DeleteEntryUsecase{
 		vaultRepo: vaultRepo,
 	}

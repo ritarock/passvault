@@ -2,8 +2,8 @@ package tui
 
 import (
 	"github.com/gdamore/tcell/v2"
-	"github.com/ritarock/passvault/application/usecase"
-	"github.com/ritarock/passvault/domain/service"
+	"github.com/ritarock/passvault/domain"
+	"github.com/ritarock/passvault/service"
 	"github.com/rivo/tview"
 )
 
@@ -13,20 +13,20 @@ type App struct {
 	listView      *ListView
 	detailView    *DetailView
 	formView      *FormView
-	listEntriesUc *usecase.ListEntriesUsecase
-	getEntryUc    *usecase.GetEntryUsecase
-	createEntryUc *usecase.CreateEntryUsecase
-	updateEntryUc *usecase.UpdateEntryUsecase
-	deleteEntryUc *usecase.DeleteEntryUsecase
-	passwordGen   *service.PasswordGenerator
+	listEntriesUc *service.ListEntriesUsecase
+	getEntryUc    *service.GetEntryUsecase
+	createEntryUc *service.CreateEntryUsecase
+	updateEntryUc *service.UpdateEntryUsecase
+	deleteEntryUc *service.DeleteEntryUsecase
+	passwordGen   *domain.PasswordGenerator
 }
 
 func NewApp(
-	listEntriesUc *usecase.ListEntriesUsecase,
-	getEntryUc *usecase.GetEntryUsecase,
-	createEntryUc *usecase.CreateEntryUsecase,
-	updateEntryUc *usecase.UpdateEntryUsecase,
-	deleteEntryUc *usecase.DeleteEntryUsecase,
+	listEntriesUc *service.ListEntriesUsecase,
+	getEntryUc *service.GetEntryUsecase,
+	createEntryUc *service.CreateEntryUsecase,
+	updateEntryUc *service.UpdateEntryUsecase,
+	deleteEntryUc *service.DeleteEntryUsecase,
 ) *App {
 	app := &App{
 		app:           tview.NewApplication(),
@@ -36,7 +36,7 @@ func NewApp(
 		createEntryUc: createEntryUc,
 		updateEntryUc: updateEntryUc,
 		deleteEntryUc: deleteEntryUc,
-		passwordGen:   service.NewPasswordGenerator(),
+		passwordGen:   domain.NewPasswordGenerator(),
 	}
 
 	app.listView = NewListView(app)

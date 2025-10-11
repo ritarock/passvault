@@ -1,4 +1,4 @@
-package persistence
+package storage
 
 import (
 	"encoding/json"
@@ -6,8 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ritarock/passvault/domain/entity"
-	"github.com/ritarock/passvault/domain/service"
+	"github.com/ritarock/passvault/domain"
 )
 
 const (
@@ -22,10 +21,10 @@ var (
 
 type FileVaultRepository struct {
 	vaultPath string
-	cryptoSvc service.CryptoService
+	cryptoSvc domain.CryptoService
 }
 
-func NewFileVaultRepository(baseDir string, cryptoSvc service.CryptoService) *FileVaultRepository {
+func NewFileVaultRepository(baseDir string, cryptoSvc domain.CryptoService) *FileVaultRepository {
 	return &FileVaultRepository{
 		vaultPath: filepath.Join(baseDir, VaultFileName),
 		cryptoSvc: cryptoSvc,
@@ -37,7 +36,7 @@ func (r *FileVaultRepository) Exists() bool {
 	return err == nil
 }
 
-func (r *FileVaultRepository) Load() (*entity.Vault, error) {
+func (r *FileVaultRepository) Load() (*domain.Vault, error) {
 	if !r.Exists() {
 		return nil, ErrVaultNotFound
 	}
@@ -52,7 +51,7 @@ func (r *FileVaultRepository) Load() (*entity.Vault, error) {
 		return nil, err
 	}
 
-	var vault entity.Vault
+	var vault domain.Vault
 	if err := json.Unmarshal(decryptedData, &vault); err != nil {
 		return nil, err
 	}
@@ -60,7 +59,7 @@ func (r *FileVaultRepository) Load() (*entity.Vault, error) {
 	return &vault, nil
 }
 
-func (r *FileVaultRepository) Save(vault *entity.Vault) error {
+func (r *FileVaultRepository) Save(vault *domain.Vault) error {
 	dir := filepath.Dir(r.vaultPath)
 	if err := os.MkdirAll(dir, DirPermission); err != nil {
 		return err

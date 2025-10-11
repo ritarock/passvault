@@ -1,4 +1,4 @@
-package service
+package domain
 
 type CryptoService interface {
 	Encrypt(data []byte) ([]byte, error)

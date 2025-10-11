@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/ritarock/passvault/domain/entity"
+	"github.com/ritarock/passvault/domain"
 	"github.com/rivo/tview"
 )
 
@@ -13,7 +13,7 @@ type ListView struct {
 	container *tview.Flex
 	table     *tview.Table
 	help      *tview.TextView
-	entries   []*entity.Entry
+	entries   []*domain.Entry
 }
 
 func NewListView(app *App) *ListView {

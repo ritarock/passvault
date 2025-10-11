@@ -1,4 +1,4 @@
-package entity
+package domain
 
 import (
 	"errors"
@@ -67,18 +67,14 @@ func (v *Vault) ListEntries() []*Entry {
 		entries = append(entries, entry)
 	}
 
-	// Sort by LastViewedAt in descending order
-	// Entries that have never been viewed (zero time) go to the end
 	for i := 0; i < len(entries)-1; i++ {
 		for j := i + 1; j < len(entries); j++ {
 			iViewed := entries[i].LastViewedAt
 			jViewed := entries[j].LastViewedAt
 
-			// If i has never been viewed, j should come before i
 			if iViewed.IsZero() && !jViewed.IsZero() {
 				entries[i], entries[j] = entries[j], entries[i]
 			} else if !iViewed.IsZero() && !jViewed.IsZero() && jViewed.After(iViewed) {
-				// Both have been viewed, sort by most recent
 				entries[i], entries[j] = entries[j], entries[i]
 			}
 		}

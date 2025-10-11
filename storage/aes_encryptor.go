@@ -1,4 +1,4 @@
-package crypto
+package storage
 
 import (
 	"crypto/aes"

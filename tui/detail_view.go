@@ -6,7 +6,7 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
-	"github.com/ritarock/passvault/domain/entity"
+	"github.com/ritarock/passvault/domain"
 	"github.com/rivo/tview"
 )
 
@@ -15,7 +15,7 @@ type DetailView struct {
 	container *tview.Flex
 	textView  *tview.TextView
 	help      *tview.TextView
-	entry     *entity.Entry
+	entry     *domain.Entry
 }
 
 func NewDetailView(app *App) *DetailView {

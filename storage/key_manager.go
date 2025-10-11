@@ -1,4 +1,4 @@
-package crypto
+package storage
 
 import (
 	"crypto/rand"
@@ -11,7 +11,6 @@ const (
 	KeySize       = 32 // AES-256
 	KeyFileName   = "key.bin"
 	KeyPermission = 0600
-	DirPermission = 0700
 )
 
 var (

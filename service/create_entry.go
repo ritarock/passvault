@@ -1,17 +1,16 @@
-package usecase
+package service
 
 import (
 	"fmt"
 
-	"github.com/ritarock/passvault/domain/entity"
-	"github.com/ritarock/passvault/domain/repository"
+	"github.com/ritarock/passvault/domain"
 )
 
 type CreateEntryUsecase struct {
-	vaultRepo repository.VaultRepository
+	vaultRepo domain.VaultRepository
 }
 
-func NewCreateEntryUsecase(vaultRepo repository.VaultRepository) *CreateEntryUsecase {
+func NewCreateEntryUsecase(vaultRepo domain.VaultRepository) *CreateEntryUsecase {
 	return &CreateEntryUsecase{
 		vaultRepo: vaultRepo,
 	}
@@ -23,7 +22,7 @@ func (uc *CreateEntryUsecase) Execute(title, password, url, notes string) error 
 		return fmt.Errorf("failed to lead vault: %w", err)
 	}
 
-	en := entity.NewEntry(title, password, url, notes)
+	en := domain.NewEntry(title, password, url, notes)
 
 	if err := vault.CreateEntry(*en); err != nil {
 		return fmt.Errorf("failed to create entry: %w", err)
