@@ -49,6 +49,9 @@ func (dv *DetailView) setupTextView() {
 		case 'c':
 			dv.copyPassword()
 			return nil
+		case 'u':
+			dv.copyUsername()
+			return nil
 		}
 
 		switch event.Key() {
@@ -62,7 +65,7 @@ func (dv *DetailView) setupTextView() {
 }
 
 func (dv *DetailView) setupHelp() {
-	dv.help.SetText("[e] Edit  [c] Copy Password  [ESC] Back").
+	dv.help.SetText("[e] Edit  [u] Copy Username  [c] Copy Password  [ESC] Back").
 		SetTextAlign(tview.AlignCenter).
 		SetTextColor(ColorSecondary)
 }
@@ -131,6 +134,32 @@ func (dv *DetailView) copyPassword() {
 
 	modal := tview.NewModal().
 		SetText("Password copied to clipboard!").
+		AddButtons([]string{"OK"}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			dv.app.pages.RemovePage("copied")
+		})
+	modal.SetBackgroundColor(tcell.ColorDefault)
+	modal.SetBorderColor(ColorSuccess)
+	dv.app.pages.AddPage("copied", modal, true, true)
+}
+
+func (dv *DetailView) copyUsername() {
+	if dv.entry == nil {
+		return
+	}
+
+	if dv.entry.Username == "" {
+		dv.app.ShowError("No username to copy")
+		return
+	}
+
+	if err := clipboard.WriteAll(dv.entry.Username); err != nil {
+		dv.app.ShowError(fmt.Sprintf("Failed to copy username: %v", err))
+		return
+	}
+
+	modal := tview.NewModal().
+		SetText("Username copied to clipboard!").
 		AddButtons([]string{"OK"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			dv.app.pages.RemovePage("copied")
