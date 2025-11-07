@@ -14,6 +14,7 @@ func TestCreateEntryUsecase_Execute(t *testing.T) {
 		name     string
 		setup    func() *mockVaultRepository
 		title    string
+		username string
 		password string
 		url      string
 		notes    string
@@ -32,6 +33,7 @@ func TestCreateEntryUsecase_Execute(t *testing.T) {
 				}
 			},
 			title:    "test title",
+			username: "test username",
 			password: "test password",
 			url:      "test url",
 			notes:    "test notes",
@@ -47,6 +49,7 @@ func TestCreateEntryUsecase_Execute(t *testing.T) {
 				}
 			},
 			title:    "test title",
+			username: "test username",
 			password: "test password",
 			url:      "test url",
 			notes:    "test notes",
@@ -65,6 +68,7 @@ func TestCreateEntryUsecase_Execute(t *testing.T) {
 				}
 			},
 			title:    "test title",
+			username: "test username",
 			password: "test password",
 			url:      "test url",
 			notes:    "test notes",
@@ -77,7 +81,7 @@ func TestCreateEntryUsecase_Execute(t *testing.T) {
 			t.Parallel()
 			repo := test.setup()
 			usecase := NewCreateEntryUsecase(repo)
-			err := usecase.Execute(test.title, test.password, test.url, test.notes)
+			err := usecase.Execute(test.title, test.username, test.password, test.url, test.notes)
 			if test.hasErr {
 				assert.Error(t, err)
 			} else {

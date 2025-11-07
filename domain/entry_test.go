@@ -8,10 +8,11 @@ import (
 
 func TestEntry_Update(t *testing.T) {
 	t.Parallel()
-	entry := NewEntry("old title", "old password", "old url", "old notes")
+	entry := NewEntry("old title", "old username", "old password", "old url", "old notes")
 	tests := []struct {
 		name     string
 		title    string
+		username string
 		password string
 		url      string
 		notes    string
@@ -19,6 +20,7 @@ func TestEntry_Update(t *testing.T) {
 		{
 			name:     "succeed",
 			title:    "new title",
+			username: "new username",
 			password: "new password",
 			url:      "new url",
 			notes:    "new notes",
@@ -27,8 +29,9 @@ func TestEntry_Update(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			entry.Update(test.title, test.password, test.url, test.notes)
+			entry.Update(test.title, test.username, test.password, test.url, test.notes)
 			assert.Equal(t, entry.Title, test.title)
+			assert.Equal(t, entry.Username, test.username)
 			assert.Equal(t, entry.Password, test.password)
 			assert.Equal(t, entry.URL, test.url)
 			assert.Equal(t, entry.Notes, test.notes)
@@ -43,7 +46,7 @@ func TestEntry_MarkAsViewed(t *testing.T) {
 	}{
 		{
 			name:  "succeed",
-			entry: *NewEntry("title", "password", "url", "notes"),
+			entry: *NewEntry("title", "username", "password", "url", "notes"),
 		},
 	}
 

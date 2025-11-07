@@ -19,7 +19,7 @@ func TestGetEntryUsecase_Execute(t *testing.T) {
 			name: "succeed: get existing entry and mark as viewed",
 			setup: func() (*mockVaultRepository, string) {
 				vault := domain.NewVault()
-				entry := domain.NewEntry("test title", "test password", "test url", "test notes")
+				entry := domain.NewEntry("test title", "test username", "test password", "test url", "test notes")
 				vault.Entries[entry.ID] = entry
 				return &mockVaultRepository{
 					loadFunc: func() (*domain.Vault, error) {
@@ -58,7 +58,7 @@ func TestGetEntryUsecase_Execute(t *testing.T) {
 			name: "failed: vault save error",
 			setup: func() (*mockVaultRepository, string) {
 				vault := domain.NewVault()
-				entry := domain.NewEntry("test title", "test password", "test url", "test notes")
+				entry := domain.NewEntry("test title", "test username", "test password", "test url", "test notes")
 				vault.Entries[entry.ID] = entry
 				return &mockVaultRepository{
 					loadFunc: func() (*domain.Vault, error) {

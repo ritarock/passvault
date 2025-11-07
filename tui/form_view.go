@@ -69,15 +69,16 @@ func (fv *FormView) loadEntry() {
 		return
 	}
 
-	fv.setupFormFields(entry.Title, entry.Password, entry.URL, entry.Notes)
+	fv.setupFormFields(entry.Title, entry.Username, entry.Password, entry.URL, entry.Notes)
 }
 
 func (fv *FormView) setupNewForm() {
-	fv.setupFormFields("", "", "", "")
+	fv.setupFormFields("", "", "", "", "")
 }
 
-func (fv *FormView) setupFormFields(title, password, url, notes string) {
+func (fv *FormView) setupFormFields(title, username, password, url, notes string) {
 	fv.form.AddInputField("Title", title, 40, nil, nil)
+	fv.form.AddInputField("Username", username, 40, nil, nil)
 	fv.form.AddPasswordField("Password", password, 40, '*', nil)
 	fv.form.AddInputField("URL", url, 40, nil, nil)
 	fv.form.AddTextArea("Notes", notes, 40, 3, 0, nil)
@@ -100,6 +101,7 @@ func (fv *FormView) setupFormFields(title, password, url, notes string) {
 
 func (fv *FormView) save() {
 	title := fv.form.GetFormItemByLabel("Title").(*tview.InputField).GetText()
+	username := fv.form.GetFormItemByLabel("Username").(*tview.InputField).GetText()
 	password := fv.form.GetFormItemByLabel("Password").(*tview.InputField).GetText()
 	url := fv.form.GetFormItemByLabel("URL").(*tview.InputField).GetText()
 	notes := fv.form.GetFormItemByLabel("Notes").(*tview.TextArea).GetText()
@@ -115,9 +117,9 @@ func (fv *FormView) save() {
 
 	var err error
 	if fv.isEdit {
-		err = fv.app.updateEntryUc.Execute(fv.entryID, title, password, url, notes)
+		err = fv.app.updateEntryUc.Execute(fv.entryID, title, username, password, url, notes)
 	} else {
-		err = fv.app.createEntryUc.Execute(title, password, url, notes)
+		err = fv.app.createEntryUc.Execute(title, username, password, url, notes)
 	}
 
 	if err != nil {

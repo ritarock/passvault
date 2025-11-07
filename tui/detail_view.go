@@ -98,6 +98,11 @@ func (dv *DetailView) render() {
 	var content strings.Builder
 
 	content.WriteString(fmt.Sprintf("[::b]Title:[-:-:-]\n%s\n\n", dv.entry.Title))
+
+	if dv.entry.Username != "" {
+		content.WriteString(fmt.Sprintf("[::b]Username:[-:-:-]\n%s\n\n", dv.entry.Username))
+	}
+
 	content.WriteString(fmt.Sprintf("[::b]Password:[-:-:-]\n%s\n\n", maskPassword(dv.entry.Password)))
 
 	if dv.entry.URL != "" {

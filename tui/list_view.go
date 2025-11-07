@@ -99,13 +99,16 @@ func (lv *ListView) renderTable() {
 	lv.table.SetCell(0, 0, tview.NewTableCell("Title").
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
-	lv.table.SetCell(0, 1, tview.NewTableCell("URL").
+	lv.table.SetCell(0, 1, tview.NewTableCell("Username").
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
-	lv.table.SetCell(0, 2, tview.NewTableCell("Notes").
+	lv.table.SetCell(0, 2, tview.NewTableCell("URL").
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
-	lv.table.SetCell(0, 3, tview.NewTableCell("CreatedAt").
+	lv.table.SetCell(0, 3, tview.NewTableCell("Notes").
+		SetTextColor(ColorPrimary).
+		SetSelectable(false))
+	lv.table.SetCell(0, 4, tview.NewTableCell("CreatedAt").
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
 
@@ -113,11 +116,13 @@ func (lv *ListView) renderTable() {
 		row := i + 1
 		lv.table.SetCell(row, 0, tview.NewTableCell(entry.Title).
 			SetTextColor(tcell.ColorWhite))
-		lv.table.SetCell(row, 1, tview.NewTableCell(entry.URL).
+		lv.table.SetCell(row, 1, tview.NewTableCell(entry.Username).
 			SetTextColor(ColorSecondary))
-		lv.table.SetCell(row, 2, tview.NewTableCell(entry.Notes).
+		lv.table.SetCell(row, 2, tview.NewTableCell(entry.URL).
 			SetTextColor(ColorSecondary))
-		lv.table.SetCell(row, 3, tview.NewTableCell(entry.CreatedAt.Format("2006-01-02 15:04")).
+		lv.table.SetCell(row, 3, tview.NewTableCell(entry.Notes).
+			SetTextColor(ColorSecondary))
+		lv.table.SetCell(row, 4, tview.NewTableCell(entry.CreatedAt.Format("2006-01-02 15:04")).
 			SetTextColor(ColorSecondary))
 	}
 

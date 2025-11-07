@@ -14,6 +14,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 		name     string
 		setup    func() (*mockVaultRepository, string)
 		title    string
+		username string
 		password string
 		url      string
 		notes    string
@@ -23,7 +24,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 			name: "succeed: update existing entry",
 			setup: func() (*mockVaultRepository, string) {
 				vault := domain.NewVault()
-				entry := domain.NewEntry("old title", "old password", "old url", "old notes")
+				entry := domain.NewEntry("old title", "old username", "old password", "old url", "old notes")
 				vault.Entries[entry.ID] = entry
 				return &mockVaultRepository{
 					loadFunc: func() (*domain.Vault, error) {
@@ -35,6 +36,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 				}, entry.ID
 			},
 			title:    "new title",
+			username: "new username",
 			password: "new password",
 			url:      "new url",
 			notes:    "new notes",
@@ -50,6 +52,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 				}, "test-id"
 			},
 			title:    "new title",
+			username: "new username",
 			password: "new password",
 			url:      "new url",
 			notes:    "new notes",
@@ -65,6 +68,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 				}, "non-existent-id"
 			},
 			title:    "new title",
+			username: "new username",
 			password: "new password",
 			url:      "new url",
 			notes:    "new notes",
@@ -74,7 +78,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 			name: "failed: vault save error",
 			setup: func() (*mockVaultRepository, string) {
 				vault := domain.NewVault()
-				entry := domain.NewEntry("old title", "old password", "old url", "old notes")
+				entry := domain.NewEntry("old title", "old username", "old password", "old url", "old notes")
 				vault.Entries[entry.ID] = entry
 				return &mockVaultRepository{
 					loadFunc: func() (*domain.Vault, error) {
@@ -86,6 +90,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 				}, entry.ID
 			},
 			title:    "new title",
+			username: "new username",
 			password: "new password",
 			url:      "new url",
 			notes:    "new notes",
@@ -98,7 +103,7 @@ func TestUpdateEntryUsecase_Execute(t *testing.T) {
 			t.Parallel()
 			repo, id := test.setup()
 			usecase := NewUpdateEntryUsecase(repo)
-			err := usecase.Execute(id, test.title, test.password, test.url, test.notes)
+			err := usecase.Execute(id, test.title, test.username, test.password, test.url, test.notes)
 			if test.hasErr {
 				assert.Error(t, err)
 			} else {

@@ -16,13 +16,13 @@ func NewCreateEntryUsecase(vaultRepo domain.VaultRepository) *CreateEntryUsecase
 	}
 }
 
-func (uc *CreateEntryUsecase) Execute(title, password, url, notes string) error {
+func (uc *CreateEntryUsecase) Execute(title, username, password, url, notes string) error {
 	vault, err := uc.vaultRepo.Load()
 	if err != nil {
 		return fmt.Errorf("failed to lead vault: %w", err)
 	}
 
-	en := domain.NewEntry(title, password, url, notes)
+	en := domain.NewEntry(title, username, password, url, notes)
 
 	if err := vault.CreateEntry(*en); err != nil {
 		return fmt.Errorf("failed to create entry: %w", err)

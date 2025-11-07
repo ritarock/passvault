@@ -32,7 +32,7 @@ func TestListEntriesUsecase_Execute(t *testing.T) {
 			name: "succeed: vault with single entry",
 			setup: func() *mockVaultRepository {
 				vault := domain.NewVault()
-				entry := domain.NewEntry("test title", "test password", "test url", "test notes")
+				entry := domain.NewEntry("test title", "test username", "test password", "test url", "test notes")
 				vault.Entries[entry.ID] = entry
 				return &mockVaultRepository{
 					loadFunc: func() (*domain.Vault, error) {
@@ -47,9 +47,9 @@ func TestListEntriesUsecase_Execute(t *testing.T) {
 			name: "succeed: vault with multiple entries",
 			setup: func() *mockVaultRepository {
 				vault := domain.NewVault()
-				entry1 := domain.NewEntry("title1", "password1", "test url1", "notes1")
-				entry2 := domain.NewEntry("title2", "password2", "test url2", "notes2")
-				entry3 := domain.NewEntry("title3", "password3", "test url3", "notes3")
+				entry1 := domain.NewEntry("title1", "username1", "password1", "test url1", "notes1")
+				entry2 := domain.NewEntry("title2", "username2", "password2", "test url2", "notes2")
+				entry3 := domain.NewEntry("title3", "username3", "password3", "test url3", "notes3")
 				vault.Entries[entry1.ID] = entry1
 				vault.Entries[entry2.ID] = entry2
 				vault.Entries[entry3.ID] = entry3
