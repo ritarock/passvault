@@ -2,6 +2,7 @@ package tui
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/ritarock/passvault/domain"
@@ -9,21 +10,25 @@ import (
 )
 
 type ListView struct {
-	app       *App
-	container *tview.Flex
-	table     *tview.Table
-	help      *tview.TextView
-	entries   []*domain.Entry
+	app             *App
+	container       *tview.Flex
+	table           *tview.Table
+	help            *tview.TextView
+	searchField     *tview.InputField
+	entries         []*domain.Entry
+	filteredEntries []*domain.Entry
 }
 
 func NewListView(app *App) *ListView {
 	lv := &ListView{
-		app:   app,
-		table: tview.NewTable(),
-		help:  tview.NewTextView(),
+		app:         app,
+		table:       tview.NewTable(),
+		help:        tview.NewTextView(),
+		searchField: tview.NewInputField(),
 	}
 
 	lv.setupTable()
+	lv.setupSearchField()
 	lv.setupHelp()
 	lv.setupContainer()
 
@@ -52,6 +57,9 @@ func (lv *ListView) setupTable() {
 		case 'q':
 			lv.app.Stop()
 			return nil
+		case '/':
+			lv.app.app.SetFocus(lv.searchField)
+			return nil
 		}
 
 		switch event.Key() {
@@ -64,8 +72,28 @@ func (lv *ListView) setupTable() {
 	})
 }
 
+func (lv *ListView) setupSearchField() {
+	lv.searchField.SetLabel(" Search: ").
+		SetFieldBackgroundColor(tcell.ColorBlack).
+		SetLabelColor(ColorPrimary).
+		SetFieldTextColor(tcell.ColorWhite)
+
+	lv.searchField.SetChangedFunc(func(text string) {
+		lv.filterEntries(text)
+		lv.renderTable()
+	})
+
+	lv.searchField.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Key() == tcell.KeyEscape {
+			lv.app.app.SetFocus(lv.table)
+			return nil
+		}
+		return event
+	})
+}
+
 func (lv *ListView) setupHelp() {
-	lv.help.SetText("[a] Add  [Enter] View  [d] Delete  [q] Quit").
+	lv.help.SetText("[/] Search  [a] Add  [Enter] View  [d] Delete  [q] Quit").
 		SetTextAlign(tview.AlignCenter).
 		SetTextColor(ColorSecondary)
 }
@@ -73,6 +101,7 @@ func (lv *ListView) setupHelp() {
 func (lv *ListView) setupContainer() {
 	lv.container = tview.NewFlex().
 		SetDirection(tview.FlexRow).
+		AddItem(lv.searchField, 1, 0, false).
 		AddItem(lv.table, 0, 1, true).
 		AddItem(lv.help, 1, 0, false)
 }
@@ -89,8 +118,27 @@ func (lv *ListView) Refresh() {
 	}
 
 	lv.entries = entries
+	lv.searchField.SetText("")
+	lv.filterEntries("")
 
 	lv.renderTable()
+}
+
+func (lv *ListView) filterEntries(query string) {
+	if query == "" {
+		lv.filteredEntries = lv.entries
+		return
+	}
+
+	query = strings.ToLower(query)
+	lv.filteredEntries = nil
+	for _, entry := range lv.entries {
+		if strings.Contains(strings.ToLower(entry.Title), query) ||
+			strings.Contains(strings.ToLower(entry.Username), query) ||
+			strings.Contains(strings.ToLower(entry.URL), query) {
+			lv.filteredEntries = append(lv.filteredEntries, entry)
+		}
+	}
 }
 
 func (lv *ListView) renderTable() {
@@ -112,7 +160,7 @@ func (lv *ListView) renderTable() {
 		SetTextColor(ColorPrimary).
 		SetSelectable(false))
 
-	for i, entry := range lv.entries {
+	for i, entry := range lv.filteredEntries {
 		row := i + 1
 		lv.table.SetCell(row, 0, tview.NewTableCell(entry.Title).
 			SetTextColor(tcell.ColorWhite))
@@ -126,8 +174,12 @@ func (lv *ListView) renderTable() {
 			SetTextColor(ColorSecondary))
 	}
 
-	if len(lv.entries) == 0 {
-		lv.table.SetCell(1, 0, tview.NewTableCell("No entries yet. Press 'a' to add one.").
+	if len(lv.filteredEntries) == 0 {
+		message := "No entries yet. Press 'a' to add one."
+		if len(lv.entries) > 0 {
+			message = "No matching entries found."
+		}
+		lv.table.SetCell(1, 0, tview.NewTableCell(message).
 			SetTextColor(ColorSecondary).
 			SetAlign(tview.AlignCenter))
 	}
@@ -136,7 +188,7 @@ func (lv *ListView) renderTable() {
 }
 
 func (lv *ListView) viewSelected() {
-	if len(lv.entries) == 0 {
+	if len(lv.filteredEntries) == 0 {
 		return
 	}
 
@@ -146,15 +198,15 @@ func (lv *ListView) viewSelected() {
 	}
 
 	index := row - 1
-	if index >= len(lv.entries) {
+	if index >= len(lv.filteredEntries) {
 		return
 	}
 
-	lv.app.ShowDetail(lv.entries[index].ID)
+	lv.app.ShowDetail(lv.filteredEntries[index].ID)
 }
 
 func (lv *ListView) deleteSelected() {
-	if len(lv.entries) == 0 {
+	if len(lv.filteredEntries) == 0 {
 		return
 	}
 
@@ -164,11 +216,11 @@ func (lv *ListView) deleteSelected() {
 	}
 
 	index := row - 1
-	if index >= len(lv.entries) {
+	if index >= len(lv.filteredEntries) {
 		return
 	}
 
-	entry := lv.entries[index]
+	entry := lv.filteredEntries[index]
 	lv.app.ShowConfirm(
 		fmt.Sprintf("Delete '%s'?", entry.Title),
 		func() {
