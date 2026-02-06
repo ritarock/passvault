@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gdamore/tcell/v2"
+	"github.com/ritarock/passvault/domain"
 	"github.com/rivo/tview"
 )
 
@@ -131,12 +132,14 @@ func (fv *FormView) save() {
 }
 
 func (fv *FormView) generatePassword() {
-	password, err := fv.app.passwordGen.Generate(16)
-	if err != nil {
-		fv.app.ShowError(fmt.Sprintf("Failed to generate password: %v", err))
-		return
-	}
+	fv.app.ShowPasswordOptionsDialog(func(opts domain.PasswordOptions) {
+		password, err := fv.app.passwordGen.GenerateWithOptions(opts)
+		if err != nil {
+			fv.app.ShowError(fmt.Sprintf("Failed to generate password: %v", err))
+			return
+		}
 
-	passwordField := fv.form.GetFormItemByLabel("Password").(*tview.InputField)
-	passwordField.SetText(password)
+		passwordField := fv.form.GetFormItemByLabel("Password").(*tview.InputField)
+		passwordField.SetText(password)
+	})
 }

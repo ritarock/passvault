@@ -101,3 +101,16 @@ func (a *App) ShowConfirm(message string, onConfirm func()) {
 	modal.SetBorderColor(ColorPrimary)
 	a.pages.AddPage("confirm", modal, true, true)
 }
+
+func (a *App) ShowPasswordOptionsDialog(onGenerate func(domain.PasswordOptions)) {
+	dialog := NewPasswordOptionsDialog(
+		func(opts domain.PasswordOptions) {
+			a.pages.RemovePage("password-options")
+			onGenerate(opts)
+		},
+		func() {
+			a.pages.RemovePage("password-options")
+		},
+	)
+	a.pages.AddPage("password-options", dialog.GetPrimitive(), true, true)
+}
