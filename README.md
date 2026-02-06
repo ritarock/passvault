@@ -13,7 +13,7 @@ A password management TUI application
 ```bash
 $ git clone https://github.com/ritarock/passvault.git
 $ cd passvault
-$ go build -o passvault ./cmd/passvault
+$ go install ./cmd/passvault
 ```
 
 ## Usage
