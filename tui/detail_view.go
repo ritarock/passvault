@@ -2,6 +2,8 @@ package tui
 
 import (
 	"fmt"
+	"os/exec"
+	"runtime"
 	"strings"
 
 	"github.com/atotto/clipboard"
@@ -52,6 +54,9 @@ func (dv *DetailView) setupTextView() {
 		case 'u':
 			dv.copyUsername()
 			return nil
+		case 'o':
+			dv.openURL()
+			return nil
 		}
 
 		switch event.Key() {
@@ -65,7 +70,7 @@ func (dv *DetailView) setupTextView() {
 }
 
 func (dv *DetailView) setupHelp() {
-	dv.help.SetText("[e] Edit  [u] Copy Username  [c] Copy Password  [ESC] Back").
+	dv.help.SetText("[e] Edit  [u] Copy Username  [c] Copy Password  [o] Open URL  [ESC] Back").
 		SetTextAlign(tview.AlignCenter).
 		SetTextColor(ColorSecondary)
 }
@@ -167,6 +172,45 @@ func (dv *DetailView) copyUsername() {
 	modal.SetBackgroundColor(tcell.ColorDefault)
 	modal.SetBorderColor(ColorSuccess)
 	dv.app.pages.AddPage("copied", modal, true, true)
+}
+
+func (dv *DetailView) openURL() {
+	if dv.entry == nil {
+		return
+	}
+
+	if dv.entry.URL == "" {
+		dv.app.ShowError("No URL to open")
+		return
+	}
+
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", dv.entry.URL)
+	case "linux":
+		cmd = exec.Command("xdg-open", dv.entry.URL)
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", dv.entry.URL)
+	default:
+		dv.app.ShowError(fmt.Sprintf("Unsupported platform: %s", runtime.GOOS))
+		return
+	}
+
+	if err := cmd.Start(); err != nil {
+		dv.app.ShowError(fmt.Sprintf("Failed to open URL: %v", err))
+		return
+	}
+
+	modal := tview.NewModal().
+		SetText("URL opened in browser!").
+		AddButtons([]string{"OK"}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			dv.app.pages.RemovePage("opened")
+		})
+	modal.SetBackgroundColor(tcell.ColorDefault)
+	modal.SetBorderColor(ColorSuccess)
+	dv.app.pages.AddPage("opened", modal, true, true)
 }
 
 func maskPassword(password string) string {
